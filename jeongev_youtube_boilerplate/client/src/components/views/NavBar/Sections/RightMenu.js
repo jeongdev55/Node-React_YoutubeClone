@@ -19,6 +19,7 @@ function RightMenu(props) {
     });
   };
 
+  //로그인 여부에 따른 메뉴 보이기/숨기기
   if (user.userData && !user.userData.isAuth) {
     return (
       <Menu mode={props.mode}>
@@ -33,6 +34,9 @@ function RightMenu(props) {
   } else {
     return (
       <Menu mode={props.mode}>
+        <Menu.Item key="upload">
+          <a href="/video/upload">Video</a>
+        </Menu.Item>
         <Menu.Item key="logout">
           <a onClick={logoutHandler}>Logout</a>
         </Menu.Item>
