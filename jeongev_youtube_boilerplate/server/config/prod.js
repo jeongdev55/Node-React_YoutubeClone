@@ -1,3 +1,3 @@
 module.exports = {
-    mongoURI:process.env.MONGO_URI
+    mongoURI:'mongodb+srv://jeongdev:jeongdev55!@jeongdevcluster.zvydueh.mongodb.net/?retryWrites=true&w=majority'
 }
