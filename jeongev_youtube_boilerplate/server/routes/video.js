@@ -84,4 +84,16 @@ router.post('/thumnail', (req, res) => {
 
 });
 
+router.get('/getVideos', (req, res) => {
+    //비디오를 db에서 가져와서 클라이언트에 보내기.
+    //find를 통해 모든 video 데이터를 가져옴
+    Video.find()
+        .populate('writer')
+        .exec((err,videos)=>{
+            if(err) return res.status(400).send(err);
+            res.status(200).json({success:true, videos})
+        })
+    
+});
+
 module.exports =router;

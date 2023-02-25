@@ -1,7 +1,10 @@
 import React ,{useState} from 'react'
 import Dropzone from 'react-dropzone'
-import {Typography, Button, Form, message, Input, Icon} from 'antd';
+import {Typography, Button, Form, message, Input,Icon} from 'antd';
 import Axios from 'axios';
+import {useSelector} from 'react-redux';
+
+Axios.default.timeout = 5 * 1000;
 
 const {Title} = Typography;
 const {TextArea} = Input;
@@ -21,12 +24,15 @@ const CategoryOptions =[
 ]
 
 
-function VideoUploadPage() {
+function VideoUploadPage(props) {
+  const user = useSelector(state=>state.user);
   const [VideoTitle, setVideoTitle] = useState("")
   const [Description, setDescription] = useState("")
   const [Private, setPrivate] = useState(0) //private =0 public =1
   const [Category, setCategory] = useState("Film & Animation")
-
+  const [FilePath, setFilePath]=useState("")
+  const [Duration, setDuration]=useState("")
+  const [ThumbnailPath, setThumbnailPath]=useState("")
 
   const onDescriptionChange=(e)=>{
     setDescription(e.currentTarget.value)
@@ -59,10 +65,59 @@ function VideoUploadPage() {
           .then(response =>{
             if(response.data.success){
               console.log(response.data)
+              
+              let variable ={
+                url:response.data.url,
+                fileName:response.data.fileName
+              }
+
+              setFilePath(response.data.url)
+              console.log("variable :"+variable)
+
+              Axios.post('/api/video/thumnail',variable)
+                .then(response=>{
+                  if(response.data.success){
+                    console.log(response.data)
+                    setDuration(response.data.fileDuration)
+                    setThumbnailPath(response.data.filePath)
+                    console.log(Duration);
+                    console.log(ThumbnailPath);
+                  }else{
+                    alert('썸네일 생성에 실패했습니다.')
+                  }
+                })
             }else{
               alert("비디오 업로드를 실패했습니다.")
             }
           })
+  }
+
+  const onSumit =(e)=>{  
+    e.preventDefault(); //원래 클릭 이벤트를 방지하고 하고싶은 것을 실행하기 위해서 
+
+    const variable={
+      writer: user.userData._id,
+      title: VideoTitle,
+      discription: Description,
+      privacy: Private,
+      filePath: FilePath,
+      catagory: Category,
+      duration: Duration,
+      thumbnail:ThumbnailPath 
+    }
+    Axios.post('/api/video/uploadVideo',variable)
+        .then(response=>{
+          if(response.data.success){
+            message.success("성공적으로 업로드 했습니다.")
+
+            setTimeout(()=>{
+              props.history.push('/');
+            },3000)
+            
+          }else{
+            alert("비디오 업로드에 실패했습니다.")
+          }
+        })
   }
 
   return (
@@ -70,13 +125,13 @@ function VideoUploadPage() {
       <div style ={{textAlign:'center', marginBottom:'2rem'}}>
         <Title level={2}>Upload Video</Title>
       </div>
-      <Form onSubmit>
+      <Form onSubmit={onSumit}>
         <div style={{ display:'flex', justifyContent:'space-between'}}>
              {/* Drop zone*/}
              <Dropzone 
              onDrop ={onDrop} //파일을 드롭할 경우 처리할 함수
              multiple ={false} //파일을 여러개? 하나일경우 false
-             maxSize={1000000} //파일 사이즈 지정
+             maxSize={10000000000} //파일 사이즈 지정
              > 
              {({getRootProps,getInputProps})=>(
                <div style={{width:'300px',height:'240px',border:'1px solid lightgray',display:'flex',
@@ -87,10 +142,12 @@ function VideoUploadPage() {
              )}
             </Dropzone>
 
-             {/* Thumbnail*/}
-             <div>
-               <img src alt />
-             </div>
+            {/* Thumbnail*/}
+            {ThumbnailPath &&
+            <div>
+              <img src={`http://localhost:5000/${ThumbnailPath}`} alt="thumbnail" />
+            </div>
+            }
         </div>
         <br/>
         <br/>
@@ -122,7 +179,7 @@ function VideoUploadPage() {
         </select>
         <br />
         <br />
-        <Button type="primary" size="large" onClick>
+        <Button type="primary" size="large" onClick={onSumit}>
           Submit
         </Button>
       </Form>
