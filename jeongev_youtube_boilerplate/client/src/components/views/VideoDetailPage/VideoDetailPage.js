@@ -6,8 +6,8 @@ import Subscriber from './Sections/Subscriber'
 
 
 function VideoDetailPage(props) {
-    const videoId = props.match.params.videoId;
-    const variable = {videoId : videoId}
+    const VideoId = props.match.params.videoId;
+    let variable = {videoId : VideoId}
     
     const [VideoDetail, setVideoDetail]= useState([])
 
@@ -29,7 +29,7 @@ function VideoDetailPage(props) {
             <Col lg={18} xs={24}>
                 <div style={{width:'100%', padding:'3rem 4rem'}}>
                     <video style={{width:'100%'}} src={`http://localhost:5000/${VideoDetail.filePath}`} controls/>
-                        <List.Item actions ={[<Subscriber userTo={VideoDetail.writer.name} />]} 
+                        <List.Item actions ={[<Subscriber userTo={VideoDetail.writer.name} userFrom={localStorage.getItem('userId')}/>]} 
                         >
                             <List.Item.Meta 
                                 avater ={<Avatar src={VideoDetail.writer.image} />}

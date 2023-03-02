@@ -7,10 +7,10 @@ const { Subscriber } = require("../models/Subscriber");
 //=================================
 router.post('/subscribeNumber', (req, res) => {
     Subscriber.find({'userTo': req.body.userTo})
-    .exec((err,subscribe)=>{
+    .exec((err,Subscriber)=>{
         if(err) return res.status(400).send(err);
-        return res.status(200).json({success:true, subscribeNumber:subscribe.length})
-    })    
+        return res.status(200).json({success:true, subscribeNumber:Subscriber.length})
+    });    
 });
 
 router.post('/subscribed', (req, res) => {
@@ -22,7 +22,25 @@ router.post('/subscribed', (req, res) => {
             result = true;
         }
         return res.status(200).json({success:true, subscribed:result})
-    })    
+    });    
+});
+
+router.post('/unSubscribe', (req, res) => {
+    Subscriber.findOneAndDelete({'userTo': req.body.userTo , 'userFrom':req.body.userFrom})
+    .exec((err,doc)=>{
+        if(err) return res.status(400).send(err);
+        res.status(200).json({success:true, doc})
+    });    
+});
+
+router.post('/subscribe', (req, res) => {
+    const subscribe = new Subscriber(req.body)
+
+
+    subscribe.save((err,doc)=>{
+        if(err) return res.status(400).send(err);
+        res.status(200).json({success:true})
+    });
 });
 
 
