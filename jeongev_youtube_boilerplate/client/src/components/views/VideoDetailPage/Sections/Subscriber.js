@@ -9,11 +9,11 @@ function Subscriber(props) {
 
     useEffect(()=>{
         let variable={userTo : props.userTo}
-        Axios.post('/api/subscribe/subscribeNumber',variable)
+        Axios.post('/api/subscribe/subscriberNumber',variable)
             .then(response =>{
                 if(response.data.success){
-                    console.log(response.data.setSubscribeNumber)
-                    setSubscribeNumber(response.data.SubscribeNumber)
+                    console.log(response.data.subscriberNumber)
+                    setSubscribeNumber(response.data.subscriberNumber)
                 }else{
                    alert("구독자 수 정보를 받아오지 못했습니다.") 
                 }
@@ -45,6 +45,7 @@ function Subscriber(props) {
                 .then(response=>{
                     if(response.data.success){
                         setSubscribeNumber(SubscribeNumber -1)
+                        setSubscribed(!Subscribed)
                     }else{
                         alert("구독 취소하는데 실패했습니다.")
                     }
@@ -56,6 +57,7 @@ function Subscriber(props) {
             .then(response=>{
                 if(response.data.success){
                     setSubscribeNumber(SubscribeNumber + 1)
+                    setSubscribed(!Subscribed)
                 }else{
                     alert("구독 하는데 실패했습니다.")
                 }
@@ -78,7 +80,7 @@ function Subscriber(props) {
           }}
           onClick={onSubscribe}
         >
-          {Subscribed ? "Subscribed" : `${SubscribeNumber}  Subscribe`}
+          {Subscribed ? `${SubscribeNumber}  Subscribed` : `${SubscribeNumber}  Subscribe`}
         </div>
       );
     }  

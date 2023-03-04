@@ -5,11 +5,11 @@ const { Subscriber } = require("../models/Subscriber");
 //=================================
 //            Subscribe
 //=================================
-router.post('/subscribeNumber', (req, res) => {
+router.post('/subscriberNumber', (req, res) => {
     Subscriber.find({'userTo': req.body.userTo})
     .exec((err,Subscriber)=>{
         if(err) return res.status(400).send(err);
-        return res.status(200).json({success:true, subscribeNumber:Subscriber.length})
+        return res.status(200).json({success:true, subscriberNumber:Subscriber.length})
     });    
 });
 
