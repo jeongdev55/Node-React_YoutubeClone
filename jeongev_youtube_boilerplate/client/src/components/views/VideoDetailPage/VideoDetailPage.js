@@ -11,7 +11,7 @@ function VideoDetailPage(props) {
     let variable = {videoId : VideoId}
     
     const [VideoDetail, setVideoDetail]= useState([])
-    //const [Comment, setComment]= useState("")
+    const [Comments, setComments]= useState([])
 
     useEffect(()=>{
         Axios.post('/api/video/getVideoDetail', variable)
@@ -21,6 +21,16 @@ function VideoDetailPage(props) {
                     setVideoDetail(response.data.videoDetail)
                 }else{
                     alert("비디오 정보를 가져오길 실패했습니다.");
+                }
+            })
+
+        Axios.post('/api/comment/getComments',variable)
+            .then(response =>{
+                if(response.data.success){
+                    console.log(response.data.comments)
+                    setComments(response.data.comments)
+                }else{
+                    alert("코멘트 정보를 가져오지 못했습니다.");
                 }
             })
     },[]);
@@ -35,13 +45,13 @@ function VideoDetailPage(props) {
                         <List.Item actions ={[subscribeButton]} 
                         >
                             <List.Item.Meta 
-                                avater ={<Avatar src={VideoDetail.writer.image} />}
+                                avatar={ <Avatar src={VideoDetail.writer.image }  /> }
                                 title = {VideoDetail.writer.name}
                                 description ={VideoDetail.discription}
                             />
                         </List.Item>
 
-                        <Comment postId={VideoId} />
+                        <Comment commentList={Comments} videoId={VideoId} />
                 </div>
         
             </Col>
