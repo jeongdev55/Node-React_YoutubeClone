@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import {useSelector} from 'react-redux'
+import {Button} from 'antd'
 import Axios from 'axios';
 import SingleComment from './SingleComment'
 
@@ -25,6 +26,9 @@ function Comment(props) {
                 .then(response =>{
                     if(response.data.success){
                         console.log(response.data.result)
+
+                        //videoDetailPage comment update
+                        props.refreshFunction(response.data.result)
                     }else{
                         alert("커멘트를 저장하지 못했습니다.")
                     }
@@ -38,7 +42,9 @@ function Comment(props) {
 
       {/* Comment Lists */}
       {props.commentList && props.commentList.map((comment,index)=>(
-        <SingleComment comment={comment} videoId={videoId}/>
+        (!comment.responseTo &&
+          <SingleComment refreshFunction={props.refreshFunction} comment={comment} videoId={videoId}/>  )
+        
       ))}
       
 
@@ -51,7 +57,7 @@ function Comment(props) {
                     value ={CommentValue}
                     placeholder="코멘트를 작성해주세요" />
         <br />
-        <button style={{width :'20%', height:'52px'}} onClick={onSubmit} >Submit</button>
+        <Button style={{width :'20%', height:'52px'}} onClick={onSubmit} >Submit</Button>
       </form>
     </div>
   )
