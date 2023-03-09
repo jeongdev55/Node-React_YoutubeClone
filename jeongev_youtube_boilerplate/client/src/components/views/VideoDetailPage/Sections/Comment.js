@@ -3,6 +3,7 @@ import {useSelector} from 'react-redux'
 import {Button} from 'antd'
 import Axios from 'axios';
 import SingleComment from './SingleComment'
+import ReplyComment from './ReplyComment'
 
 function Comment(props) {
 
@@ -43,7 +44,10 @@ function Comment(props) {
       {/* Comment Lists */}
       {props.commentList && props.commentList.map((comment,index)=>(
         (!comment.responseTo &&
-          <SingleComment refreshFunction={props.refreshFunction} comment={comment} videoId={videoId}/>  )
+          <React.Fragment>
+          <SingleComment refreshFunction={props.refreshFunction} comment={comment} videoId={videoId}/>
+          <ReplyComment parentCommentId={comment._id} videoId={videoId} commentList={props.commentList} refreshFunction={props.refreshFunction}/>
+          </React.Fragment>  )
         
       ))}
       
